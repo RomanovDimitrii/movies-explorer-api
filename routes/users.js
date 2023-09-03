@@ -7,7 +7,6 @@ const {
   changeProfile,
   login,
   getUserProfile,
-  logout,
 } = require('../controllers/users');
 
 const {
@@ -24,6 +23,6 @@ router.get('/me', auth, getUserProfile);
 
 router.patch('/me', auth, changeProfileValidator, changeProfile);
 
-router.post('/signout', auth, logout);
+// router.post('/signout', auth, logout);
 
 module.exports = router;

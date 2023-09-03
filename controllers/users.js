@@ -1,15 +1,15 @@
-const bcrypt = require('bcrypt'); // импортируем bcrypt
+const bcrypt = require('bcrypt'); // импортируем bcryptquest
 
 const User = require('../models/user');
 const { generateToken } = require('../utils/token');
-const { AuthError } = require('../errors/AuthError');
+// const { AuthError } = require('../errors/AuthError');
 const { NotFoundError } = require('../errors/NotFoundError');
 
 function getUserProfile(req, res, next) {
   User.findById(req.user)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Карточка или пользователь не найден');
+        throw new NotFoundError('Пользователь не найден');
       }
       return res.status(200).send(user);
     })
@@ -70,12 +70,8 @@ function login(req, res, next) {
           httpOnly: true,
         })
         .send({ message: 'авторизация прошла успешно' });
-
-      // .end({ message: "Пользователь авторизован" });
     })
-    .catch((err) => {
-      next(new AuthError(`Ошибка email или пароля ${err}`));
-    });
+    .catch(next);
 }
 
 function logout(req, res, next) {
@@ -86,9 +82,7 @@ function logout(req, res, next) {
         .clearCookie('jwt')
         .send('Токен удален из Cookies');
     })
-    .catch((err) => {
-      next(new AuthError(`Ошибка email или пароля ${err}`));
-    });
+    .catch(next);
 }
 
 module.exports = {

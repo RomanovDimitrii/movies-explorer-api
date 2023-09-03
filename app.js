@@ -17,6 +17,10 @@ const { signUpValidator, signInValidator } = require('./utils/validators');
 const { notFoundErr } = require('./errors/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { DB_ADRESS } = require('./config');
+const auth = require('./middlewares/auth');
+const {
+  logout,
+} = require('./controllers/users');
 
 mongoose.connect(DB_ADRESS, { // DB_ADRESS вместо 'mongodb://127.0.0.1:27017/mestodb'
   useNewUrlParser: true,
@@ -52,16 +56,16 @@ app.use(cors({
   origin: [
     'http://localhost:3001',
     'https://localhost:3001',
-  //  'http://dimitrii.mesto.nomoreparties.co',
-    // 'https://dimitrii.mesto.nomoreparties.co',
+    // 'http://dimitrii.movies.nomoredomainsicu.ru',
+  //  'https://dimitrii.movies.nomoredomainsicu.ru',
   ],
   credentials: true,
   maxAge: 30,
 }));
 
-app.use(limiter);
-
 app.use(requestLogger); // подключаем логгер запросов
+
+app.use(limiter);
 
 app.post('/signin', signInValidator, login);
 
@@ -71,11 +75,13 @@ app.use('/users', userRouter);
 
 app.use('/movies', moviesRouter);
 
-app.use(errorLogger); // подключаем логгер ошибок
+app.use('/signout', auth, logout);
 
 app.use(errors()); // обработчик ошибок celebrate
 
-app.use('/*', notFoundErr);
+app.use('/*', auth, notFoundErr);
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errorHandleMiddleware);
 

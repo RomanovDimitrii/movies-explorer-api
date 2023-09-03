@@ -35,13 +35,13 @@ module.exports = (err, req, res, next) => {
 
   if (err.name === 'badRequestError') {
     return res.status(ERROR_BAD_REQUEST).send({
-      message: 'Нет прав на удаление фильма',
+      message: 'Ошибка запроса',
     });
   }
 
   if (err.name === 'CastError') {
     return res.status(ERROR_BAD_REQUEST).send({
-      message: 'Фильм не найден',
+      message: 'Невалидный запрос',
     });
   }
 

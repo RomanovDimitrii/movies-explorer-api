@@ -4,17 +4,13 @@ const bcrypt = require('bcrypt'); // импортируем bcrypt
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-  },
-  about: {
-    type: String,
-  },
-  avatar: {
-    type: String,
-    required: false,
+    required: [true, 'Заполните поле "name"'],
+    minlength: [2, 'Имя должно быть не менее двух символа'],
+    maxlength: [30, 'Имя должно быть не более 30 символов'],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Заполните поле "email"'],
     unique: true,
     validate: {
       validator(v) {
@@ -43,7 +39,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
           return Promise.reject(new Error('Неправильные почта или пароль'));
         }
 
-        return user; // теперь user доступен
+        return user;
       });
     });
 };
