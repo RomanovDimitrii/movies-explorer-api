@@ -22,7 +22,7 @@ module.exports = (err, req, res, next) => {
 
   if (err.name === 'authError') {
     return res.status(ERROR_AUTIFICATION).send({
-      message: 'Ошибка аутентификации',
+      message: err.message,
     });
   }
 

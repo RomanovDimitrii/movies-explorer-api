@@ -5,22 +5,17 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
-const userRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
+const routes = require('./routes/index');
 const errorHandleMiddleware = require('./middlewares/errorHandleMiddleware');
-const { createUser, login } = require('./controllers/users');
-const { signUpValidator, signInValidator } = require('./utils/validators');
 const { notFoundErr } = require('./errors/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { DB_ADRESS } = require('./config');
 const auth = require('./middlewares/auth');
-const {
-  logout,
-} = require('./controllers/users');
+const limiter = require('./utils/limiter');
 
 mongoose.connect(DB_ADRESS, { // DB_ADRESS вместо 'mongodb://127.0.0.1:27017/mestodb'
   useNewUrlParser: true,
@@ -28,14 +23,6 @@ mongoose.connect(DB_ADRESS, { // DB_ADRESS вместо 'mongodb://127.0.0.1:270
 });
 
 const app = express();
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  // store: ... , // Use an external store for more precise rate limiting
-});
 
 // app.use(express.json()); // вместо bodyParser
 
@@ -67,21 +54,13 @@ app.use(requestLogger); // подключаем логгер запросов
 
 app.use(limiter);
 
-app.post('/signin', signInValidator, login);
-
-app.post('/signup', signUpValidator, createUser);
-
-app.use('/users', userRouter);
-
-app.use('/movies', moviesRouter);
-
-app.use('/signout', auth, logout);
-
-app.use(errors()); // обработчик ошибок celebrate
+app.use(routes);
 
 app.use('/*', auth, notFoundErr);
 
 app.use(errorLogger); // подключаем логгер ошибок
+
+app.use(errors()); // обработчик ошибок celebrate
 
 app.use(errorHandleMiddleware);
 

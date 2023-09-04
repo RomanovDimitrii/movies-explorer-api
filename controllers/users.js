@@ -75,13 +75,9 @@ function login(req, res, next) {
 }
 
 function logout(req, res, next) {
-  const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
-    .then(() => {
-      res
-        .clearCookie('jwt')
-        .send('Токен удален из Cookies');
-    })
+  res.clearCookie('jwt')
+    .send({ message: 'токен удален из cookies' })
+
     .catch(next);
 }
 
