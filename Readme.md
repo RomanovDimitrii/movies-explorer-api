@@ -1,9 +1,8 @@
-# movies-explorer-api
+# Проект Movies-explorer-api
 
-Адрес репозитория: https://github.com/RomanovDimitrii/movies-explorer-api
+ **Реализован функционал:**
+ - прием и отправка данных по регистрации/авторизации/аутентификации (через cookies) пользователя
+ - прием отправка и хранение данных по фильмам пользователя, добавленных в избранное
+ - валидация принятых данных
 
-## Ссылки на проект
-
-IP 158.160.96.24
-
-https://api.dimitrii.movies.nomoredomainsicu.ru
+**Инструменты и стек:** <pre> JavaScript   Node.js   API  MongoDB  Express  NPM </pre>
